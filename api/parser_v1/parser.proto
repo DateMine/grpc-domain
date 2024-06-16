@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package parser_v1;
+//import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/DateMine/grpc-domain/pkg/parser_v1;parser_v1";
+
+service ParseV1{
+  rpc SendHttp(ParsingRequest) returns(ParsingResponse);
+}
+
+message Header{
+  string  name = 1;
+  string  value = 2;
+}
+
+message  Cookie{
+  string name = 1;
+  string value = 2;
+  string domain = 3;
+}
+
+//Запрос
+message HttpClientSettings{
+  google.protobuf.StringValue proxy = 1;
+  bool useProxy = 2;
+  int64 timeout = 3;
+}
+
+enum Method{
+  get = 0;
+  post = 1;
+}
+
+message RequestSettings{
+  Method method = 1;
+  string url = 2;
+  google.protobuf.StringValue body = 3;
+  repeated Header headers = 4;
+  repeated Cookie cookies = 5;
+}
+
+message ParsingRequest{
+  HttpClientSettings http_client_settings = 1;
+  RequestSettings request_settings = 2;
+}
+
+//Ответ
+message ParsingResponse{
+   bytes body = 1;
+   int64 status_code = 2;
+   repeated Header headers = 3;
+   repeated  Cookie cookies = 4;
+}
